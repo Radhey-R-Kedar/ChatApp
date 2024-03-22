@@ -2,7 +2,6 @@ import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {Colors} from '../theams/Colors';
-import {MessagesData} from '../data/MessageData';
 import firestore from '@react-native-firebase/firestore';
 
 const MyMessageView = ({message, time}) => {
@@ -36,7 +35,7 @@ const AnotherPersonMessage = ({message, time}) => {
   );
 };
 const ChatBody = props => {
-  const flatListRef = useRef();
+  const scrollViewRef = useRef();
   const [messages, setMessages] = useState([]);
   useEffect(() => {
     firestore()
@@ -48,51 +47,52 @@ const ChatBody = props => {
         const allMessages = snapShot.docs.map(snap => {
           return {msgId: snap.id, ...snap.data()};
         });
-        // console.log(allMessages)
         setMessages(allMessages);
       });
   }, []);
 
   const scrollToEnd = () => {
-    flatListRef.current.scrollToEnd({animated: true});
+    scrollViewRef.current.scrollToEnd({animated: true});
   };
 
   const renderItem = ({item}) => {
     if (item.sender === props.userId) {
-      return (
-        <MyMessageView
-          message={item.body}
-          time={item.timestamp?.toDate().toLocaleString('en-US', {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true, // Enable AM/PM format
-          })}
-        />
-      );
+       return (
+         <MyMessageView
+           key={item.msgId} 
+           message={item.body}
+           time={item.timestamp?.toDate().toLocaleString('en-US', {
+             hour: 'numeric',
+             minute: 'numeric',
+             hour12: true, 
+           })}
+         />
+       );
     } else {
-      return (
-        <AnotherPersonMessage
-          message={item.body}
-          time={item.timestamp?.toDate().toLocaleString('en-US', {
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true, // Enable AM/PM format
-          })}
-        />
-      );
+       return (
+         <AnotherPersonMessage
+           key={item.msgId} 
+           message={item.body}
+           time={item.timestamp?.toDate().toLocaleString('en-US', {
+             hour: 'numeric',
+             minute: 'numeric',
+             hour12: true, 
+           })}
+         />
+       );
     }
-  };
+   };
+   
 
   return (
-    <FlatList
+    <ScrollView
+      ref={scrollViewRef}
       onContentSizeChange={scrollToEnd}
-      ref={flatListRef}
-      data={messages}
-      renderItem={renderItem}
-      keyExtractor={item => item.msgId}
       showsVerticalScrollIndicator={false}
       className="flex-1 p-3"
-    />
+    >
+      {messages.map((item, index) => renderItem({ item, index }))}
+    </ScrollView>
   );
 };
 

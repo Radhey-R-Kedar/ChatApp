@@ -6,11 +6,18 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-const SettingModal = ({showSettingModal, setShowSettingModal}) => {
+const SettingModal = () => {
+  const state = useSelector(state =>state.chatlist)
+  const dispatch = useDispatch()
+
+  const toggleOptionModal =()=>{
+    dispatch({type:'toggleOptionsModal'})
+  }
   return (
-    <Modal transparent={true} visible={showSettingModal} animationType="fade">
-      <TouchableWithoutFeedback onPress={() => setShowSettingModal(false)}>
+    <Modal transparent={true} visible={state.showOptionsModal} animationType="fade">
+      <TouchableWithoutFeedback onPress={() => toggleOptionModal()}>
         <View className="flex-1"></View>
       </TouchableWithoutFeedback>
       <View className="border-2 border-headerColor rounded-xl bg-headerColor w-40 absolute right-0 top-14 p-2 mr-1">

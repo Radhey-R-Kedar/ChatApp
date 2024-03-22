@@ -1,32 +1,26 @@
 import {
   Dimensions,
   FlatList,
-  Image,
   RefreshControl,
-  ScrollView,
-  StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Colors} from '../theams/Colors';
-import {ChatListData} from '../data/ChatListData';
 import {useNavigation} from '@react-navigation/native';
-import {getDeviceId} from '../utils/Functions';
-import VectorIcon from '../utils/VectorIcon';
 import ChatListItem from './ChatListItem';
+import {useDispatch, useSelector} from 'react-redux';
 
 var {width, height} = Dimensions.get('screen');
 
-const ChatListBody = ({
-  chatRoomList,
-  fetchChatListData,
-  setChatRoomList,
-  isMyChats,
-}) => {
+const ChatListBody = ({fetchChatListAndUpdateState, isMyChats}) => {
+  
   const navigation = useNavigation();
+  
+  const dispatch = useDispatch();
 
+  const state = useSelector(state => state.chatlist);
+  
   const handleOnChatPress = (roomId, name, profile) => {
     navigation.navigate('ChatScreen', (roomId = {roomId, name, profile}));
   };
@@ -40,26 +34,20 @@ const ChatListBody = ({
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
     setTimeout(() => {
-      const userId = getDeviceId();
-      fetchChatListData(userId)
-        .then(data => {
-          setChatRoomList(data);
-          setRefreshing(false);
-        })
-        .catch(err => console.log('Useeffect ' + err));
-    }, 2);
+      fetchChatListAndUpdateState(dispatch);
+      setRefreshing(false);
+    }, 1000);
   }, []);
 
   const renderItem = ({item}) => {
-
     if (isMyChats) {
       return (
         item.ismychatroom && (
           <ChatListItem
-          item={item}
-          handleOnChatLongPress={handleOnChatLongPress}
-          handleOnChatPress={handleOnChatPress}
-        />
+            item={item}
+            handleOnChatLongPress={handleOnChatLongPress}
+            handleOnChatPress={handleOnChatPress}
+          />
         )
       );
     } else {
@@ -75,12 +63,13 @@ const ChatListBody = ({
 
   return (
     <>
-      <View style={styles.container} className="flex-1  pl-1 pr-2">
-        {chatRoomList == undefined ? (
-          <View className="mt-60 justify-center items-center"
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }>
+      <View className="flex-1  pl-1 pr-2">
+        {state.chatRoomList == undefined ? (
+          <View
+            className="mt-60 justify-center items-center"
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
             <Text className="text-mediumGray font-bold text-2xl">
               Welcome to Chit-Chat
             </Text>
@@ -94,7 +83,7 @@ const ChatListBody = ({
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
               }
-              data={chatRoomList}
+              data={state.chatRoomList}
               renderItem={renderItem}
               keyExtractor={item => item.id}
             />
@@ -105,28 +94,5 @@ const ChatListBody = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: Colors.white,
-  },
-  innerConatiner: {
-    width: width * 0.55,
-    height: '90%',
-    paddingLeft: 10,
-  },
-  profileImage: {
-    borderColor: Colors.orange,
-    borderWidth: 2,
-  },
-  name: {
-    color: Colors.black,
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-  message: {
-    color: Colors.mediumGray,
-    fontSize: 12,
-  },
-});
 
 export default ChatListBody;

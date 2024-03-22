@@ -1,9 +1,14 @@
-import React from 'react'
-import AppNavigation from './src/navigtion/AppNavigation'
+import React from 'react';
+import AppNavigation from './src/navigtion/AppNavigation';
+import {store} from './src/redux/store';
+import {Provider} from 'react-redux';
 
-AppNavigation
 const App = () => {
-  return <AppNavigation/>
-}
+  return (
+    <Provider store={store}>
+      <AppNavigation />
+    </Provider>
+  );
+};
 
-export default App
+export default App;
