@@ -1,21 +1,31 @@
-import {StatusBar, View} from 'react-native';
-import React, {useEffect} from 'react';
-import ChatListHeader from '../components/chatListHeader';
+import {LogBox, StatusBar, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import ChatListHeader from '../components/ChatListHeader';
 import ChatListBody from '../components/ChatListBody';
 import {Colors} from '../theams/Colors';
-import MyModal from '../components/MyModal';
+import MyModal from '../Modals/MyModal';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import VectorIcon from '../utils/VectorIcon';
-import SettingModal from '../components/SettingModal';
-import {useDispatch} from 'react-redux';
+import SettingModal from '../Modals/SettingModal';
+import {useDispatch, useSelector} from 'react-redux';
 import {fetchChatListData} from '../utils/FireBaseFunctions';
+import {
+  getChatListDataFromStorage,
+  updateAsyncStorageWithChatData,
+  updateAsyncStorageWithChatListData,
+} from '../utils/AsyncStorageFunctions';
+import OptionsHeader from '../components/OptionsHeader';
 
 const Tab = createMaterialTopTabNavigator();
 
 const ChatListScreen = () => {
   const dispatch = useDispatch();
+
+  const userinfo = useSelector(state => state.userinfo);
+  const chatlist = useSelector(state => state.chatlist);
+
   const onAddUser = () => {
     dispatch({type: 'toggleAddUserModal'});
   };
@@ -23,24 +33,77 @@ const ChatListScreen = () => {
     dispatch({type: 'toggleOptionsModal'});
   };
 
-  const fetchChatListAndUpdateState = async dispatch => {
-    try {
-      const chatRoomList = await fetchChatListData();
-      dispatch({type: 'fetchChatListSuccess', payload: chatRoomList});
-    } catch (error) {
-      console.error('Failed to fetch chat list:', error);
+  const fetchChatListAndUpdateStorageData = async (retryCount = 0) => {
+    if (userinfo.isOnline) {
+      try {
+        const chatRoomList = await fetchChatListData();
+        if (chatRoomList.status === 'no data' && retryCount < 2) {
+          await fetchChatListAndUpdateStorageData(retryCount + 1);
+        } else if (chatRoomList.status === 'success') {
+          await updateAsyncStorageWithChatListData(chatRoomList.data);
+          onRefresh2();
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching chat rooms:', error);
+      }
     }
   };
 
-  useEffect(() => {
-    fetchChatListAndUpdateState(dispatch);
-  }, [dispatch]);
+  const fetchChatListFromStorageAndUpdateChatRoomList = () => {
+    getChatListDataFromStorage().then(chatRoomList => {
+      dispatch({
+        type: 'fetchChatListSuccess',
+        payload: chatRoomList,
+      });
+    });
+  };
 
+  const onRefresh2 = React.useCallback(() => {
+    dispatch({type: 'toggleRefreshing'});
+    setTimeout(() => {
+      fetchChatListFromStorageAndUpdateChatRoomList();
+      dispatch({type: 'toggleRefreshing'});
+    }, 1000);
+  }, []);
+
+  const onAddUserRefresh = () => {
+    dispatch({type: 'toggleRefreshing'});
+    setTimeout(() => {
+      fetchChatListAndUpdateStorageData();
+      dispatch({type: 'toggleRefreshing'});
+      setTimeout(() => {
+        onRefresh();
+      }, 1000);
+    }, 1000);
+  };
+
+  const onRefresh = React.useCallback(() => {
+    dispatch({type: 'toggleRefreshing'});
+    setTimeout(() => {
+      fetchChatListAndUpdateStorageData();
+
+      setTimeout(() => {
+        fetchChatListFromStorageAndUpdateChatRoomList();
+      }, 1000);
+
+      dispatch({type: 'toggleRefreshing'});
+    }, 1000);
+  }, []);
+  
+
+  useEffect(() => {
+    updateAsyncStorageWithChatData(chatlist.chatRoomList);
+    fetchChatListFromStorageAndUpdateChatRoomList();
+  }, []);
+
+  useEffect(() => {
+    fetchChatListAndUpdateStorageData();
+  }, [userinfo.isOnline]);
 
   return (
     <View className="flex-1">
       <StatusBar backgroundColor={Colors.statusBar} />
-      <ChatListHeader onAddUser={onAddUser} onThreeDotPress={onThreeDotPress} />
+      {chatlist.isChatRoomSelected ?<OptionsHeader onThreeDotPress={onThreeDotPress}/>: <ChatListHeader onAddUser={onAddUser} onThreeDotPress={onThreeDotPress} />}
       <Tab.Navigator
         screenOptions={{
           tabBarLabelStyle: {fontSize: 15},
@@ -54,25 +117,17 @@ const ChatListScreen = () => {
         <Tab.Screen
           name="All"
           children={props => (
-            <ChatListBody
-              {...props}
-              fetchChatListAndUpdateState={fetchChatListAndUpdateState}
-              isMyChats={false}
-            />
+            <ChatListBody {...props} onRefresh={onRefresh} isMyChats={false} />
           )}
         />
         <Tab.Screen
           name="My Chats"
           children={props => (
-            <ChatListBody
-              {...props}
-              fetchChatListAndUpdateState={fetchChatListAndUpdateState}
-              isMyChats={true}
-            />
+            <ChatListBody {...props} onRefresh={onRefresh} isMyChats={true} />
           )}
         />
       </Tab.Navigator>
-      <TouchableOpacity className="border-2 border-orange bg-headerColor h-16 w-16 rounded-full items-center justify-center absolute right-5 bottom-5">
+      {!chatlist.isChatRoomSelected && <TouchableOpacity className="border-2 border-orange bg-headerColor h-16 w-16 rounded-full items-center justify-center absolute right-5 bottom-5">
         <VectorIcon
           type="Octicons"
           name="person-add"
@@ -80,9 +135,9 @@ const ChatListScreen = () => {
           color={Colors.black}
           onPress={() => onAddUser()}
         />
-      </TouchableOpacity>
-      <SettingModal />
-      <MyModal />
+      </TouchableOpacity>}
+      <SettingModal onAddUser={onAddUser} />
+      <MyModal onRefresh={onAddUserRefresh} />
     </View>
   );
 };

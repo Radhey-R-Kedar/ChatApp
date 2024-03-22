@@ -8,21 +8,23 @@ import {
   Image,
   TouchableWithoutFeedback,
 } from 'react-native';
-import React, {startTransition, useEffect, useState} from 'react';
+import React from 'react';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../theams/Colors';
-import {generateRandomCode, getDeviceId} from '../utils/Functions';
-import firestore from '@react-native-firebase/firestore';
+import {generateRandomCode} from '../utils/Functions';
 import {profilePics} from '../utils/Images';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   createNewChatRoom,
   joinExistingChatRoom,
 } from '../utils/FireBaseFunctions';
+import ProfilePicSelector from '../components/modalComponents/ProfilePicSelector';
 
-const MyModal = () => {
+const MyModal = ({onRefresh}) => {
   const chatlist = useSelector(state => state.chatlist);
   const chatroom = useSelector(state => state.chatroom);
+  const userinfo = useSelector(state => state.userinfo);
+  
   const dispatch = useDispatch();
 
   const createNewId = () => {
@@ -35,11 +37,13 @@ const MyModal = () => {
   };
 
   const handleJoinExistingChatRoom = async () => {
-    joinExistingChatRoom(chatroom.id)
+    joinExistingChatRoom(chatroom.id, userinfo.isOnline)
       .then(status => {
         dispatch({type: 'setStatus', payload: status});
         if (status == 'success') {
+          onRefresh();
           onBackPress();
+          dispatch({type: 'clearAllData'});
         }
       })
       .catch(error => {
@@ -48,16 +52,29 @@ const MyModal = () => {
   };
 
   const handleCreateNewChatRoom = async () => {
-    createNewChatRoom(chatroom.id, chatroom.profilePicId, chatroom.name)
-      .then(status => {
-        dispatch({type: 'setStatus', payload: status});
-        if (status == 'success') {
-          onBackPress();
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
+    if (chatroom.id.length != 8) {
+      dispatch({type: 'setStatus', payload: 'Id must have 8 characters.'});
+    } else if (chatroom.name.length == 0) {
+      dispatch({type: 'setStatus', payload: 'Name should no empty.'});
+    } else {
+      createNewChatRoom(
+        chatroom.id,
+        chatroom.profilePicId,
+        chatroom.name,
+        userinfo.isOnline,
+      )
+        .then(status => {
+          dispatch({type: 'setStatus', payload: status});
+          if (status == 'success') {
+            onRefresh();
+            onBackPress();
+            dispatch({type: 'clearAllData'});
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
   };
 
   return (
@@ -94,7 +111,7 @@ const MyModal = () => {
                   <TouchableOpacity
                     className=" items-center justify-end w-[80%] mt-1 mb-1"
                     onPress={createNewId}>
-                    <Text className="text-right w-[100%] font-bold text-orange">
+                    <Text className="text-right w-[100%] font-bold text-Orange">
                       Auto-Id
                     </Text>
                   </TouchableOpacity>
@@ -109,26 +126,7 @@ const MyModal = () => {
                   />
                   <View className="w-[80%] h-20 m-2 justify-center items-center">
                     <Text className="text-black">Select Profile Picture</Text>
-                    <ScrollView
-                      horizontal={true}
-                      showsHorizontalScrollIndicator={false}
-                      className="mt-1 border-black border-t-[1px] border-b-[1px] w-[100%] rounded-md p-2">
-                      {profilePics.map(item => (
-                        <TouchableOpacity
-                          onPress={() =>
-                            dispatch({
-                              type: 'setProfilePicId',
-                              payload: item.id,
-                            })
-                          }
-                          key={item.id}>
-                          <Image
-                            source={item.img}
-                            className="h-10 w-10 rounded-full ml-1 mr-1"
-                          />
-                        </TouchableOpacity>
-                      ))}
-                    </ScrollView>
+                    <ProfilePicSelector />
                   </View>
                 </>
               )}

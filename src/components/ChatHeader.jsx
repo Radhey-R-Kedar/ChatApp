@@ -18,7 +18,7 @@ const ChatHeader = (props) => {
         name="arrow-back"
         size={20}
         color={Colors.mediumGray}
-        onPress={() => navigation.goBack()}
+        onPress={() => {navigation.goBack(); console.log("back");}}
       />
       <View className="p-2 mt-1 mb-1 flex-row items-center w-[90%] ">
         <View className = "border-2 border-orange rounded-full">
@@ -33,13 +33,13 @@ const ChatHeader = (props) => {
         </View>
       </View>
       
-        <VectorIcon
+        {/* <VectorIcon
           type="Entypo"
           name="dots-three-vertical"
           size={20}
           color={Colors.mediumGray}
           onPress={() => navigation.goBack()}
-        />
+        /> */}
     </View>
   );
 };

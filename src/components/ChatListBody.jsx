@@ -1,45 +1,29 @@
-import {
-  Dimensions,
-  FlatList,
-  RefreshControl,
-  Text,
-  View,
-} from 'react-native';
-import React, {useState} from 'react';
-import {Colors} from '../theams/Colors';
+import {FlatList, RefreshControl, ScrollView, Text, View} from 'react-native';
+import React from 'react';
 import {useNavigation} from '@react-navigation/native';
 import ChatListItem from './ChatListItem';
 import {useDispatch, useSelector} from 'react-redux';
 
-var {width, height} = Dimensions.get('screen');
-
-const ChatListBody = ({fetchChatListAndUpdateState, isMyChats}) => {
-  
+const ChatListBody = ({onRefresh, isMyChats}) => {
   const navigation = useNavigation();
-  
-  const dispatch = useDispatch();
+  const dispatch =useDispatch();
 
-  const state = useSelector(state => state.chatlist);
-  
+  const chatlist = useSelector(state => state.chatlist);
+
   const handleOnChatPress = (roomId, name, profile) => {
-    navigation.navigate('ChatScreen', (roomId = {roomId, name, profile}));
+    if(chatlist.isChatRoomSelected){
+      dispatch({type:"setSelectedChatRoom", payload: roomId, selected:true})
+    }else{
+      navigation.navigate('ChatScreen', (roomId = {roomId, name, profile}));
+    }
   };
 
-  const handleOnChatLongPress = id => {
-    console.log(id);
+  const handleOnChatLongPress = roomId => {
+    dispatch({type:"setSelectedChatRoom", payload: roomId, selected:true})
   };
-
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = React.useCallback(() => {
-    setRefreshing(true);
-    setTimeout(() => {
-      fetchChatListAndUpdateState(dispatch);
-      setRefreshing(false);
-    }, 1000);
-  }, []);
 
   const renderItem = ({item}) => {
+    const isSelected = item.id === chatlist.selectedChatroom;
     if (isMyChats) {
       return (
         item.ismychatroom && (
@@ -47,6 +31,7 @@ const ChatListBody = ({fetchChatListAndUpdateState, isMyChats}) => {
             item={item}
             handleOnChatLongPress={handleOnChatLongPress}
             handleOnChatPress={handleOnChatPress}
+            isSelected={isSelected}
           />
         )
       );
@@ -56,6 +41,7 @@ const ChatListBody = ({fetchChatListAndUpdateState, isMyChats}) => {
           item={item}
           handleOnChatLongPress={handleOnChatLongPress}
           handleOnChatPress={handleOnChatPress}
+          isSelected={isSelected}
         />
       );
     }
@@ -64,26 +50,33 @@ const ChatListBody = ({fetchChatListAndUpdateState, isMyChats}) => {
   return (
     <>
       <View className="flex-1  pl-1 pr-2">
-        {state.chatRoomList == undefined ? (
-          <View
-            className="mt-60 justify-center items-center"
+        {chatlist.chatRoomList.length == 0 ? (
+          <ScrollView
             refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              <RefreshControl
+                refreshing={chatlist.refreshing}
+                onRefresh={onRefresh}
+              />
             }>
+            <View  className="mt-60 justify-center items-center">
             <Text className="text-mediumGray font-bold text-2xl">
               Welcome to Chit-Chat
             </Text>
             <Text className="text-mediumGray font-semibold text-sm">
               Anonymous Chat Application
             </Text>
-          </View>
+            </View>
+          </ScrollView>
         ) : (
           <>
             <FlatList
               refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                <RefreshControl
+                  refreshing={chatlist.refreshing}
+                  onRefresh={onRefresh}
+                />
               }
-              data={state.chatRoomList}
+              data={chatlist.chatRoomList}
               renderItem={renderItem}
               keyExtractor={item => item.id}
             />
@@ -93,6 +86,5 @@ const ChatListBody = ({fetchChatListAndUpdateState, isMyChats}) => {
     </>
   );
 };
-
 
 export default ChatListBody;

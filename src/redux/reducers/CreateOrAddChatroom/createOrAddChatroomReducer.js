@@ -3,7 +3,7 @@ const initialState = {
   id: '',
   profilePicId: 1,
   name: '',
-  status:''
+  status: '',
 };
 
 const createOrAddChatroomReducer = (state = initialState, action) => {
@@ -32,6 +32,14 @@ const createOrAddChatroomReducer = (state = initialState, action) => {
       return {
         ...state,
         status: action.payload,
+      };
+    case 'clearAllData':
+      return {
+        ...state,
+        id: '',
+        profilePicId: 1,
+        name: '',
+        status: '',
       };
     default:
       return state;

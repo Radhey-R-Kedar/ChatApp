@@ -1,4 +1,4 @@
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, Text, View } from 'react-native'
 import React from 'react'
 import { Colors } from '../theams/Colors'
 import VectorIcon from '../utils/VectorIcon'
@@ -29,11 +29,3 @@ const ChatListHeader = ({onAddUser,onThreeDotPress}) => {
 }
 
 export default ChatListHeader
-
-const styles = StyleSheet.create({
-    container:{
-      backgroundColor:'#fae4e3',
-      height:height*0.08
-    },
-   
-})

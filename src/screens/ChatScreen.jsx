@@ -14,7 +14,7 @@ const ChatScreen = props => {
   let profile = props.route.params.profile;
   let userId = getDeviceId();
 
-  const chatRef = firestore().collection('chats').doc(roomId);
+  const chatRef = firestore().collection('chatrooms').doc(roomId);
 
 
   return (
@@ -22,7 +22,7 @@ const ChatScreen = props => {
       <StatusBar backgroundColor={Colors.statusBar} />
       <ChatHeader name={name} profile={profile}/>
       <View className="flex-1">
-        <ChatBody roomId={roomId} userId ={userId}  />
+        <ChatBody roomId={roomId}/>
       </View>
       <ChatFooter chatRef={chatRef} userId={userId}/>
     </>
