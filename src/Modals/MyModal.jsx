@@ -84,7 +84,7 @@ const MyModal = ({onRefresh}) => {
       animationType="fade">
       <TouchableWithoutFeedback onPress={() => onBackPress()}>
         <View className="flex-1 justify-center items-center">
-          <View className="w-[70%] items-center justify-center rounded-3xl border-2 border-black bg-headerColor  pt-3 pb-3">
+          <View className="w-[70%] items-center justify-center rounded-3xl border-2 border-black bg-HeaderColor  pt-3 pb-3">
             <View className="flex flex-row justify-between w-[90%] mb-2">
               <Text className="text-black text-center w-[90%] ">
                 Add or create chatroom.
@@ -133,20 +133,20 @@ const MyModal = ({onRefresh}) => {
             </View>
             {chatroom.createNew ? (
               <TouchableOpacity
-                className="border-[1px] border-black rounded-md p-2 m-2 w-[80%] items-center justify-center align-middle bg-statusBar"
+                className="border-[1px] border-black rounded-md p-2 m-2 w-[80%] items-center justify-center align-middle bg-StatusBar"
                 onPress={handleCreateNewChatRoom}>
                 <Text className="text-black">Create</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
-                className="border-[1px] border-black rounded-md p-2 m-2 w-[80%] items-center justify-center align-middle bg-statusBar"
+                className="border-[1px] border-black rounded-md p-2 m-2 w-[80%] items-center justify-center align-middle bg-StatusBar"
                 onPress={handleJoinExistingChatRoom}>
                 <Text className="text-black">Add</Text>
               </TouchableOpacity>
             )}
             <Text className="text-black m-1">-----------OR-----------</Text>
             <TouchableOpacity
-              className="border-[1px] border-black rounded-md p-2 m-2 w-[80%] items-center justify-center align-middle bg-statusBar"
+              className="border-[1px] border-black rounded-md p-2 m-2 w-[80%] items-center justify-center align-middle bg-StatusBar"
               onPress={() => dispatch({type: 'toogleCreateNew'})}>
               <Text className="text-black text-center">
                 {chatroom.createNew ? 'Add Existing Chartoom' : 'Create New'}

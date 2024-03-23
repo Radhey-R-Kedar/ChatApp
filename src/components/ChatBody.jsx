@@ -29,7 +29,7 @@ const AnotherPersonMessage = ({message, time}) => {
   return (
     <View className="flex flex-row justify-start max-w-[100%] mb-2">
       <View className="max-w-[80%]">
-        <View className="p-2 rounded-t-2xl rounded-r-2xl bg-lightPink">
+        <View className="p-2 rounded-t-2xl rounded-r-2xl bg-LightPink">
           <Text style={{color: Colors.black}}>{message}</Text>
         </View>
         <Text className="text-mediumGray text-xs">{time}</Text>
@@ -44,7 +44,6 @@ const ChatBody = props => {
   const scrollViewRef = useRef();
   const userId = getDeviceId();
   const chatRoomId = props.roomId;
-  console.log("Log ChatDat", chatdata[`newMsgArr_${chatRoomId}`]);
 
   let lastMsgId =  chatdata && chatdata[chatRoomId][0]!= undefined ? chatdata[chatRoomId][chatdata[chatRoomId].length-1].msgId :null 
 
@@ -60,6 +59,7 @@ if (index !== -1) {
 }
 
   let finalMessageList = [...chatdata[chatRoomId], ...uniqueMessageList]
+ finalMessageList = finalMessageList[0]==undefined? []: finalMessageList;
 
  
 

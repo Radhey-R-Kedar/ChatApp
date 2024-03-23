@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux'
 const OptionsHeader = ({onThreeDotPress}) => {
   const dispatch = useDispatch();
   return (
-    <View className="flex-row justify-between items-center pl-5 pr-5 bg-headerColor pt-3 h-12" >
+    <View className="flex-row justify-between items-center pl-5 pr-5 bg-HeaderColor pt-3 h-12" >
      <VectorIcon
           type="Ionicon"
           name="arrow-back"

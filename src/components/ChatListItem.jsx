@@ -22,7 +22,7 @@ const ChatListItem = ({
     <TouchableOpacity
       onPress={() => handleOnChatPress(item.id, item.name, item.profile)}
       onLongPress={() => handleOnChatLongPress(item.id)}>
-      <View className={`p-2 mt-1 mb-1 flex-row justify-between items-center ${isSelected ? 'bg-headerColor' : ''}`}>
+      <View className={`p-2 mt-1 mb-1 flex-row justify-between items-center ${isSelected ? 'bg-HeaderColor' : ''}`}>
         <Image
           source={{uri: item.profile} || User1}
           className="rounded-full h-16 w-16 border-4 justify-center items-center"

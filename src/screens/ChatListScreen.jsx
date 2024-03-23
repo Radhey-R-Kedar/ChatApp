@@ -127,7 +127,7 @@ const ChatListScreen = () => {
           )}
         />
       </Tab.Navigator>
-      {!chatlist.isChatRoomSelected && <TouchableOpacity className="border-2 border-orange bg-headerColor h-16 w-16 rounded-full items-center justify-center absolute right-5 bottom-5">
+      {!chatlist.isChatRoomSelected && <TouchableOpacity className="border-2 border-orange bg-HeaderColor h-16 w-16 rounded-full items-center justify-center absolute right-5 bottom-5">
         <VectorIcon
           type="Octicons"
           name="person-add"

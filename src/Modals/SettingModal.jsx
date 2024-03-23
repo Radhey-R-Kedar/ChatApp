@@ -44,7 +44,7 @@ const SettingModal = ({onAddUser}) => {
       <TouchableWithoutFeedback onPress={() => toggleOptionModal()}>
         <View className="flex-1"></View>
       </TouchableWithoutFeedback>
-      <View className="border-2 border-red-200 rounded-xl bg-headerColor w-36 absolute right-0 top-14 p-2 mr-3">
+      <View className="border-2 border-red-200 rounded-xl bg-HeaderColor w-36 absolute right-0 top-14 p-2 mr-3">
         <TouchableOpacity onPress={() => console.log('Setting')}>
           <Text className="text-black text-left font-medium text-base p-[2px]">
             Settings

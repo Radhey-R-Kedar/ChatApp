@@ -11,7 +11,7 @@ const ChatHeader = (props) => {
   const navigation = useNavigation();
   return (
     <View
-      className="flex-row justify-between items-center pl-5 pr-5 bg-headerColor"
+      className="flex-row justify-between items-center pl-5 pr-5 bg-HeaderColor"
     >
       <VectorIcon
         type="Ionicon"

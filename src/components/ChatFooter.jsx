@@ -71,7 +71,7 @@ const ChatFooter = ({userId, chatRef}) => {
           name="paper-plane"
           size={20}
           color={Colors.white}
-          className="bg-orange w-12 h-12 rounded-3xl justify-center items-center "
+          className="bg-Orange w-12 h-12 rounded-3xl justify-center items-center "
         />
       </TouchableOpacity>
     </View>

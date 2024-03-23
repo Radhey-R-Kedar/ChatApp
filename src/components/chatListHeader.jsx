@@ -8,7 +8,7 @@ var {width, height} = Dimensions.get('screen');
 const ChatListHeader = ({onAddUser,onThreeDotPress}) => {
     const navigation = useNavigation();
   return (
-    <View className="flex-row justify-between items-center pl-5 pr-5 bg-headerColor pt-3" >
+    <View className="flex-row justify-between items-center pl-5 pr-5 bg-HeaderColor pt-3" >
      <VectorIcon
           type="Octicons"
           name="person-add"
