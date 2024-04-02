@@ -7,7 +7,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import NetInfo from '@react-native-community/netinfo';
 import { updateAsyncStorageWithChatData } from '../utils/AsyncStorageFunctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import ProfileScreen from '../screens/ProfileScreen';
 const Stack = createStackNavigator();
 
 const AppNavigation = () => {
@@ -47,7 +47,7 @@ const AppNavigation = () => {
     updateReducerListsWithChatData(chatlist.chatRoomList);
   }, [userinfo.isOnline]);
 
-
+console.log("navigation called");
 
   return (
     <NavigationContainer>
@@ -60,6 +60,11 @@ const AppNavigation = () => {
         <Stack.Screen
           name="ChatScreen"
           component={ChatScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="ProfileScreen"
+          component={ProfileScreen}
           options={{headerShown: false}}
         />
       </Stack.Navigator>

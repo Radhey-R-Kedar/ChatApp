@@ -9,10 +9,13 @@ import {
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { deleteChatRoom } from '../utils/FireBaseFunctions';
+import { useNavigation } from '@react-navigation/native';
 
 const SettingModal = ({onAddUser}) => {
   const chatlist = useSelector(state =>state.chatlist)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   useEffect(() => {
     const backAction = () => {
@@ -39,6 +42,23 @@ const SettingModal = ({onAddUser}) => {
   const toggleOptionModal =()=>{
     dispatch({type:'toggleOptionsModal'})
   }
+
+  const handleDelete = async () => {
+    if(chatlist.selectedChatroom!=null){
+      deleteChatRoom(chatlist.selectedChatroom);
+      dispatch({type:"setSelectedChatRoom", payload: null, selected:false})
+    }else{
+      console.log('Delete Work should be done'); await AsyncStorage.clear();
+    }
+    dispatch({type: 'toggleOptionsModal'});
+  }
+
+  const handleDetails =async () => {
+    if(chatlist.selectedChatroom!=null){
+      navigation.navigate('ProfileScreen')
+    }
+    dispatch({type: 'toggleOptionsModal'});
+  };
   return (
     <Modal transparent={true} visible={chatlist.showOptionsModal} animationType="fade">
       <TouchableWithoutFeedback onPress={() => toggleOptionModal()}>
@@ -50,12 +70,12 @@ const SettingModal = ({onAddUser}) => {
             Settings
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => console.log('Details')}>
+        <TouchableOpacity onPress={() => handleDetails()}>
           <Text className="text-black text-left font-medium text-base p-[2px]">
             Details
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={async () => {console.log('Delete Work should be done'); await AsyncStorage.clear();}}>
+        <TouchableOpacity onPress={async () => handleDelete()}>
           <Text className="text-black text-left font-medium text-base p-[2px]">
             Delete
           </Text>

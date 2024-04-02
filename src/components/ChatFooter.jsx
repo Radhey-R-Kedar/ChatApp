@@ -16,6 +16,9 @@ var {width, height} = Dimensions.get('screen');
 const ChatFooter = ({userId, chatRef}) => {
   const [currMessage, setCurrMessage] = useState('');
   const [sendEnable, setSendEnable] = useState(false);
+  
+
+console.log("ChatFooter reloaded");
 
   const onChange = value => {
     setCurrMessage(value);
@@ -23,11 +26,13 @@ const ChatFooter = ({userId, chatRef}) => {
   };
 
   const onSendMessage = () => {
-    chatRef.collection('messages').add({
+    let message = {
       body: currMessage,
       sender: userId,
       timestamp: firestore.FieldValue.serverTimestamp(),
-    });
+    };
+    
+    chatRef.collection('messages').add(message);
     setSendEnable(false);
     setCurrMessage('');
   };

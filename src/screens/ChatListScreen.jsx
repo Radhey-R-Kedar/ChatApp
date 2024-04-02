@@ -1,4 +1,4 @@
-import {LogBox, StatusBar, View} from 'react-native';
+import {StatusBar, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import ChatListHeader from '../components/ChatListHeader';
 import ChatListBody from '../components/ChatListBody';
@@ -21,6 +21,7 @@ import OptionsHeader from '../components/OptionsHeader';
 const Tab = createMaterialTopTabNavigator();
 
 const ChatListScreen = () => {
+  console.log('ChatListScreen reloaded');
   const dispatch = useDispatch();
 
   const userinfo = useSelector(state => state.userinfo);
@@ -92,7 +93,7 @@ const ChatListScreen = () => {
   
 
   useEffect(() => {
-    updateAsyncStorageWithChatData(chatlist.chatRoomList);
+    updateAsyncStorageWithChatData();
     fetchChatListFromStorageAndUpdateChatRoomList();
   }, []);
 

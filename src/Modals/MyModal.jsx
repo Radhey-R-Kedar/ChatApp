@@ -52,7 +52,7 @@ const MyModal = ({onRefresh}) => {
   };
 
   const handleCreateNewChatRoom = async () => {
-    if (chatroom.id.length != 8) {
+    if (chatroom.id.length != 9) {
       dispatch({type: 'setStatus', payload: 'Id must have 8 characters.'});
     } else if (chatroom.name.length == 0) {
       dispatch({type: 'setStatus', payload: 'Name should no empty.'});

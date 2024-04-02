@@ -2,10 +2,18 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import VectorIcon from '../utils/VectorIcon'
 import { Colors } from '../theams/Colors'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteChatRoom } from '../utils/FireBaseFunctions'
 
 const OptionsHeader = ({onThreeDotPress}) => {
   const dispatch = useDispatch();
+  const chatlist = useSelector(state=>state.chatlist);
+  const handleDelete = () => {
+    if(chatlist.selectedChatroom!=null){
+      deleteChatRoom(chatlist.selectedChatroom);
+      dispatch({type:"setSelectedChatRoom", payload: null, selected:false})
+    }
+  }
   return (
     <View className="flex-row justify-between items-center pl-5 pr-5 bg-HeaderColor pt-3 h-12" >
      <VectorIcon
@@ -21,7 +29,7 @@ const OptionsHeader = ({onThreeDotPress}) => {
           name="delete"
           size={24}
           color={Colors.mediumGray}
-          onPress={() => dispatch({type:"setSelectedChatRoom", payload: null, selected:false})}
+          onPress={() => handleDelete()}
         />
         
       <VectorIcon

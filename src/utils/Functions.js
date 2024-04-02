@@ -9,7 +9,7 @@ export const generateRandomCode = (length) => {
       result += characters.charAt(Math.floor(Math.random() * characters.length));
     }
   
-    return result;
+    return "#" + result;
   }
 
 export const getImage = async filePath => {
