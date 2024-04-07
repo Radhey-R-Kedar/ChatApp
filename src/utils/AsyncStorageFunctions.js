@@ -103,42 +103,27 @@ export const getChatRoomDataFromStorage = async desiredId => {
   }
 };
 
-// updata chatData in async storage
+// updateAsyncStorageWithChatDataInChatRoom
 export const updateAsyncStorageWithChatDataInChatRoom = async chatRoomId => {
   try {
     console.log(chatRoomId);
     const state = store.getState();
-    const chatData = state.chatdata[`newMsgArr_${chatRoomId}`];
-    console.log(chatData);
+    const chatData = await state.chatdata[`newMsgArr_${chatRoomId}`];
+    console.log(state.chatdata.lastMessageTimestamps[`timestamp_${chatRoomId}`]);
+
     if (chatData !== undefined) {
       const storedData = await AsyncStorage.getItem(chatRoomId);
       const asyncStorageData = storedData ? JSON.parse(storedData) : [];
-      console.log(asyncStorageData.length);
-      if (asyncStorageData.length != 0) {
 
-        const lastMessageIdFormOldChatDataList =
-        asyncStorageData.length > 0
-          ? asyncStorageData[asyncStorageData.length - 1].msgId
-          : null;
-    
-      let index = -1;
-      if (lastMessageIdFormOldChatDataList != null) {
-        index = chatData.findIndex(
-          x => x.msgId === lastMessageIdFormOldChatDataList,
+      // console.log(asyncStorageData);
+      if(chatData.length>0){
+        await AsyncStorage.setItem(
+          chatRoomId,
+          JSON.stringify([...asyncStorageData, ...chatData]),
         );
-      }
-      console.log(index);
-
-        if(index!=-1){
-          await AsyncStorage.setItem(
-            chatRoomId,
-            JSON.stringify([...asyncStorageData, ...chatData.slice(index + 1)]),
-          );
-          console.log('Chatroom data updated successfully in AsyncStorage.');
-        }
-      } else {
-        await AsyncStorage.setItem(chatRoomId, JSON.stringify(chatData));
         console.log('Chatroom data updated successfully in AsyncStorage.');
+      } else {
+        console.log('No new chat data to update in AsyncStorage.');
       }
     } else {
       console.log('No chat data to update in AsyncStorage.');
@@ -147,3 +132,4 @@ export const updateAsyncStorageWithChatDataInChatRoom = async chatRoomId => {
     console.error('Error updating AsyncStorage with chat data:', error);
   }
 };
+

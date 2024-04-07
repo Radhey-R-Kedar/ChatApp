@@ -1,5 +1,7 @@
 // Define initial state
-const initialState = {};
+const initialState = {
+  lastMessageTimestamps: {} // { roomId: timestamp }
+};
 
 // Reducer function
 const chatRoomsReducer = (state = initialState, action) => {
@@ -8,6 +10,10 @@ const chatRoomsReducer = (state = initialState, action) => {
       return {
         ...state,
         [action.payload.roomId]: action.payload.messages,
+        lastMessageTimestamps: {
+          ...state.lastMessageTimestamps,
+          [`timestamp_${action.payload.roomId}`]: action.payload.messages.length > 0 ? action.payload.messages[action.payload.messages.length - 1].timestamp : null
+        }
       };
     case 'addMessage':
       const {roomId, message} = action.payload;

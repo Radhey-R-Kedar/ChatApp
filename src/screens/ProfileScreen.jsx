@@ -15,12 +15,16 @@ import Profile from '../assets/user8.jpeg';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {getChatRoomDataFromStorage} from '../utils/AsyncStorageFunctions';
+import ProfilePhotoOptions from '../Modals/ProfilePhotoOptions';
+
 
 const ProfileScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const chatlist = useSelector(state => state.chatlist);
   const [isEditable, setIsEditable] = useState(false);
+  const [editPhoto, setEditPhoto] = useState(false)
+  const [capturedImage, setCapturedImage] = useState(null);
 
   const [profile, setProfile] = useState({
     createdate: '',
@@ -110,11 +114,23 @@ const ProfileScreen = () => {
 
         <View className="flex flex-1 mb-14 pt-10">
           <View className="flex-1 justify-center items-center pt-5">
-            <View className="border-[2.5px] border-Orange rounded-full">
+            <View className="border-[2.5px] border-Orange rounded-full relative">
+              {capturedImage!=null ? <Image
+                source={{uri: capturedImage}}
+                className="w-48 h-48 rounded-full"
+              />:
               <Image
                 source={{uri: profile?.profile} || Profile}
                 className="w-48 h-48 rounded-full"
-              />
+              />}
+              {/* {isEditable && <VectorIcon
+                type="FontAwesome5"
+                name="camera"
+                size={15}
+                color={Colors.black}
+                className="absolute right-5 bottom-2 bg-Green rounded-md p-1  border-2 border-Orange"
+                onPress={() => setEditPhoto(!editPhoto)}
+              />} */}
             </View>
             <View className="h-[70%]">
               {!isEditable ? (
@@ -196,6 +212,7 @@ const ProfileScreen = () => {
           </View>
         </View>
       </ScrollView>
+      {/* <ProfilePhotoOptions editPhoto={editPhoto} setEditPhoto ={setEditPhoto} capturedImage={capturedImage} setCapturedImage={setCapturedImage}/> */}
     </KeyboardAvoidingView>
   );
 };
