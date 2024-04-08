@@ -17,6 +17,7 @@ import {
   updateAsyncStorageWithChatListData,
 } from '../utils/AsyncStorageFunctions';
 import OptionsHeader from '../components/OptionsHeader';
+import QRCodeModal from '../Modals/QRCodeModal';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -90,7 +91,6 @@ const ChatListScreen = () => {
       dispatch({type: 'toggleRefreshing'});
     }, 1000);
   }, []);
-  
 
   useEffect(() => {
     updateAsyncStorageWithChatData();
@@ -104,7 +104,13 @@ const ChatListScreen = () => {
   return (
     <View className="flex-1">
       <StatusBar backgroundColor={Colors.statusBar} />
-      {chatlist.isChatRoomSelected ?<OptionsHeader onThreeDotPress={onThreeDotPress}/>: <ChatListHeader onAddUser={onAddUser} onThreeDotPress={onThreeDotPress} />}
+      {chatlist.isChatRoomSelected ? (
+        <OptionsHeader onRefresh={onRefresh} onThreeDotPress={onThreeDotPress} />
+      ) : (
+        <ChatListHeader
+          onThreeDotPress={onThreeDotPress}
+        />
+      )}
       <Tab.Navigator
         screenOptions={{
           tabBarLabelStyle: {fontSize: 15},
@@ -128,17 +134,20 @@ const ChatListScreen = () => {
           )}
         />
       </Tab.Navigator>
-      {!chatlist.isChatRoomSelected && <TouchableOpacity className="border-2 border-orange bg-HeaderColor h-16 w-16 rounded-full items-center justify-center absolute right-5 bottom-5">
-        <VectorIcon
-          type="Octicons"
-          name="person-add"
-          size={25}
-          color={Colors.black}
-          onPress={() => onAddUser()}
-        />
-      </TouchableOpacity>}
+      {!chatlist.isChatRoomSelected && (
+        <TouchableOpacity className="border-2 border-orange bg-HeaderColor h-16 w-16 rounded-full items-center justify-center absolute right-5 bottom-5">
+          <VectorIcon
+            type="Octicons"
+            name="person-add"
+            size={25}
+            color={Colors.black}
+            onPress={() => onAddUser()}
+          />
+        </TouchableOpacity>
+      )}
       <SettingModal onAddUser={onAddUser} />
       <MyModal onRefresh={onAddUserRefresh} />
+      <QRCodeModal onRefresh={onRefresh} />
     </View>
   );
 };

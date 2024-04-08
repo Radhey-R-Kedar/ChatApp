@@ -156,7 +156,7 @@ export const createNewChatRoom = (id, profilePicId, name, isOnline) => {
 export const deleteChatRoom = id => {
   return new Promise(async (resolve, reject) => {
     const deviceId = getDeviceId();
-    console.log(deviceId);
+    console.log("device Id",deviceId);
     const userRef = await firestore().collection('users').doc(deviceId);
     userRef
       .get()
@@ -166,6 +166,9 @@ export const deleteChatRoom = id => {
           return userRef.update({
             mychatrooms: firestore.FieldValue.arrayRemove(id),
             chatrooms: firestore.FieldValue.arrayRemove(id),
+          }).then(() => {
+            // After updating or creating user document, create chat room
+            firestore().collection('chatrooms').doc(id).delete();
           });
         } else if (docSnapshot.data().chatrooms.includes(id)) {
           return userRef.update({
@@ -173,9 +176,6 @@ export const deleteChatRoom = id => {
           });
         }
       })
-      .then(() => {
-        // After updating or creating user document, create chat room
-        return firestore().collection('chatrooms').doc(id).delete();
-      });
+      
   });
 };

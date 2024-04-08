@@ -2,6 +2,7 @@
 const initialState = {
   showAddUserModal: false,
   showOptionsModal: false,
+  showQRCodeModal: false,
   constainData: false,
   chatRoomList: [],
   refreshing:false,
@@ -22,6 +23,11 @@ const chatListReducer = (state = initialState, action) => {
       return {
         ...state,
         showOptionsModal: !state.showOptionsModal,
+      };
+    case 'toggleQRCodeModal':
+      return {
+        ...state,
+        showQRCodeModal: !state.showQRCodeModal,
       };
     case 'toggleRefreshing':
       return {

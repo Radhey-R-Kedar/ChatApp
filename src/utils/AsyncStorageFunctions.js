@@ -46,13 +46,17 @@ export const updateAsyncStorageWithChatData = async () => {
 
   if (chatRoomList.length != 0) {
     chatRoomList.forEach(async chatRoom => {
+      console.log(chatRoom.id);
       const storedData = await AsyncStorage.getItem(chatRoom.id);
-      const asyncStorageData = storedData ? JSON.parse(storedData) : [];
+      const asyncStorageData =await storedData ? JSON.parse(storedData) : [];
 
+      console.log(asyncStorageData.length, 'asyncStorageData');
       let lastMessageTimestamp = null;
       if (asyncStorageData.length > 0) {
         lastMessageTimestamp =
           asyncStorageData[asyncStorageData.length - 1].timestamp;
+
+          console.log(lastMessageTimestamp, 'lastMessageTimestamp');
 
         firestore()
           .collection('chatrooms')
@@ -60,13 +64,13 @@ export const updateAsyncStorageWithChatData = async () => {
           .collection('messages')
           .where('timestamp', '>', lastMessageTimestamp)
           .orderBy('timestamp')
-          .onSnapshot(snapShot => {
+          .onSnapshot(async snapShot => {
             const newMessages = snapShot.docs.map(snap => {
               return {...snap.data()};
             });
 
             if (newMessages.length > 0) {
-              AsyncStorage.setItem(
+              await AsyncStorage.setItem(
                 chatRoom.id,
                 JSON.stringify([...asyncStorageData, ...newMessages]),
               );
@@ -106,7 +110,7 @@ export const getChatRoomDataFromStorage = async desiredId => {
 // updateAsyncStorageWithChatDataInChatRoom
 export const updateAsyncStorageWithChatDataInChatRoom = async chatRoomId => {
   try {
-    console.log(chatRoomId);
+    console.log("chatRoomId",chatRoomId);
     const state = store.getState();
     const chatData = await state.chatdata[`newMsgArr_${chatRoomId}`];
     console.log(state.chatdata.lastMessageTimestamps[`timestamp_${chatRoomId}`]);

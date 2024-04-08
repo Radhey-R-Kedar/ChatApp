@@ -87,7 +87,6 @@ const ChatBody = (props) => {
     });
   
     return () => {
-      // Unsubscribe from the Firestore listener when the component unmounts
       unsubscribe();
     };
   }, [props.roomId, chatdata.lastMessageTimestamps[`timestamp_${chatRoomId}`]]); // Include props.roomId in the dependency array
