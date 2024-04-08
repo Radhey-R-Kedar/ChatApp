@@ -132,7 +132,7 @@ export const createNewChatRoom = (id, profilePicId, name, isOnline) => {
             .set({
               name: name,
               participants: [`users/${deviceId}`],
-              profile: `chatroompics/user${profilePicId}.jpeg`,
+              profile: `chatroompics/user${profilePicId}.jpg`,
               createdate: firestore.FieldValue.serverTimestamp(),
               tagline: "Let's forge friendships together!",
               description: "Welcome to our cozy chat room! 🌟 Here, you'll find a warm and welcoming space to connect with like-minded individuals. Let's make memories and forge friendships together!",

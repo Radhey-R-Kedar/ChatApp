@@ -54,7 +54,7 @@ import {
                payload: item.id,
              })
            }
-           className={`${chatroom.profilePicId=== item.id ?"border-2 rounded-full border-orange":""}`}
+           className={`${chatroom.profilePicId=== item.id ?"border-2 rounded-full border-Orange":""}`}
            key={item.id}>
            <Image
              source={item.img}
