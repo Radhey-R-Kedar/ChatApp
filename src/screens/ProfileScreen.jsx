@@ -11,7 +11,7 @@ import {
 import React, {useEffect, useState} from 'react';
 import VectorIcon from '../utils/VectorIcon';
 import {Colors} from '../theams/Colors';
-import Profile from '../assets/user8.jpeg';
+import Profile from '../assets/user8.jpg';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {getChatRoomDataFromStorage} from '../utils/AsyncStorageFunctions';

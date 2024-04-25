@@ -10,7 +10,7 @@ import React from 'react';
 import {Colors} from '../theams/Colors';
 import VectorIcon from '../utils/VectorIcon';
 import {useNavigation} from '@react-navigation/native';
-import User1 from '../assets/user8.jpeg';
+import User1 from '../assets/user8.jpg';
 import {useDispatch, useSelector} from 'react-redux';
 import {updateAsyncStorageWithChatDataInChatRoom} from '../utils/AsyncStorageFunctions';
 
